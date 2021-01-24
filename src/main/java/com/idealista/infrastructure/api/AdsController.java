@@ -24,9 +24,7 @@ public class AdsController {
     public ResponseEntity<List<QualityAd>> qualityListing() {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
-            List<QualityAd> adsSorted = createQualityAds().stream()
-                    .sorted(Comparator.comparing(QualityAd::getScore).reversed())
-                    .collect(Collectors.toList());
+            List<QualityAd> adsSorted = getQualityAdsSorted(createQualityAds());
             return new ResponseEntity<List<QualityAd>>(adsSorted, httpHeaders, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -241,6 +239,18 @@ public class AdsController {
         return words;
     }
 
+    /** Returns the quality ads sorted
+     * @param qualityAds : The list of quality ads to order
+     * @return the quality ads list sorted
+     */
+    public List<QualityAd>  getQualityAdsSorted(List<QualityAd> qualityAds){
+
+        List<QualityAd> qualityAdsSorted = qualityAds.stream()
+                .sorted(Comparator.comparing(QualityAd::getScore).reversed())
+                .collect(Collectors.toList());
+
+        return qualityAdsSorted;
+    }
 
     /** Returns the public ads sorted using the quality ads scores
      * @param publicAds : The list of public ads
@@ -252,9 +262,7 @@ public class AdsController {
         List<PublicAd> publicAdsSorted = new ArrayList<>();
 
         // We sort the quality ads first because they have an score
-        List<QualityAd> qualityAdsSorted = qualityAds.stream()
-                .sorted(Comparator.comparing(QualityAd::getScore).reversed())
-                .collect(Collectors.toList());
+        List<QualityAd> qualityAdsSorted = getQualityAdsSorted(qualityAds);
 
         // We get the ids ordered, because the id of quality and public ads is the same (only scores >= 40)
         for(QualityAd ad : qualityAdsSorted){
