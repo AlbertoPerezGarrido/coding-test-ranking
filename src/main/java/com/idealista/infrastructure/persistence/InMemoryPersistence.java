@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/** Repository for the ads API.
+ * @author Alberto Pérez
+ * @version 1.0
+ */
 @Repository
 public class InMemoryPersistence {
 
@@ -35,5 +39,54 @@ public class InMemoryPersistence {
         pictures.add(new PictureVO(8, "http://www.idealista.com/pictures/8", "HD"));
     }
 
-    //TODO crea los métodos que necesites
+    /** Getter method to get de AdVO list
+     * @return the list of ads
+     */
+    public List<AdVO> getAds(){
+        return ads;
+    }
+
+    /** Returns the urls of the pictures in an ad
+     * @param ad : The ad we want to examine
+     * @return the list of pictures urls from PictureVO
+     */
+    public List<String> getAdPicturesUrls(AdVO ad){
+        List<String> urls = new ArrayList<String>();
+        List<Integer> adPictures = ad.getPictures();
+        if(!adPictures.isEmpty()){
+            for(int picture : adPictures) {
+                urls.add(findPicture(picture).getUrl());
+            }
+        }
+        return urls;
+    }
+
+    /** Returns the quality of the pictures in an ad
+     * @param ad : The ad we want to examine
+     * @return the list of pictures qualities from PictureVO
+     */
+    public List<String> getAdPicturesQuality(AdVO ad){
+        List<String> pictureQualities = new ArrayList<String>();
+        List<Integer> adPictures = ad.getPictures();
+        if(!adPictures.isEmpty()){
+            for(int picture : adPictures) {
+                pictureQualities.add(findPicture(picture).getQuality());
+            }
+        }
+        return pictureQualities;
+    }
+
+    /** Finds a picture by id
+     * @param pictureId : The id of the picture we want to find
+     * @return the picture which has that id
+     */
+    public PictureVO findPicture(int pictureId) {
+        for(PictureVO picture : pictures) {
+            if(picture.getId().equals(pictureId)) {
+                return picture;
+            }
+        }
+        return null;
+    }
+
 }
